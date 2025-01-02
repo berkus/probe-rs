@@ -16,7 +16,7 @@ use self::general::host_status::HostStatusRequest;
 use self::swj::clock::SWJClockRequest;
 use self::transfer::InnerTransferBlockRequest;
 
-const USB_TIMEOUT: Duration = Duration::from_millis(1000);
+const USB_TIMEOUT: Duration = Duration::from_millis(1000_0000);
 
 #[derive(Debug, thiserror::Error, docsplay::Display)]
 pub enum CmsisDapError {

@@ -95,7 +95,7 @@ pub struct CmsisDap {
     connected: bool,
 
     /// Speed in kHz
-    speed_khz: u32,
+    speed_hz: u32,
     scan_chain: Option<Vec<ScanChainElement>>,
 
     batch: Vec<BatchCommand>,
@@ -111,7 +111,7 @@ impl std::fmt::Debug for CmsisDap {
             .field("swo_buffer_size", &self.swo_buffer_size)
             .field("swo_active", &self.swo_active)
             .field("swo_streaming", &self.swo_streaming)
-            .field("speed_khz", &self.speed_khz)
+            .field("speed_khz", &self.speed_hz)
             .finish()
     }
 }
@@ -149,7 +149,7 @@ impl CmsisDap {
             swo_active: false,
             swo_streaming: false,
             connected: false,
-            speed_khz: 1_000,
+            speed_hz: 1_000,
             scan_chain: None,
             batch: Vec::new(),
         })
@@ -770,15 +770,15 @@ impl DebugProbe for CmsisDap {
     ///
     /// CMSIS-DAP offers no possibility to get the actual speed used.
     fn speed_khz(&self) -> u32 {
-        self.speed_khz
+        self.speed_hz
     }
 
     /// For CMSIS-DAP, we can set the maximum speed. The actual speed
     /// used by the probe cannot be determined, but it will not be
     /// higher than this value.
     fn set_speed(&mut self, speed_khz: u32) -> Result<u32, DebugProbeError> {
-        self.set_swj_clock(speed_khz * 1_000)?;
-        self.speed_khz = speed_khz;
+        self.set_swj_clock(speed_khz)?; // * 1_000)?;
+        self.speed_hz = speed_khz;
 
         Ok(speed_khz)
     }
@@ -808,13 +808,13 @@ impl DebugProbe for CmsisDap {
     /// Enters debug mode.
     #[tracing::instrument(skip(self))]
     fn attach(&mut self) -> Result<(), DebugProbeError> {
-        tracing::debug!("Attaching to target system (clock = {}kHz)", self.speed_khz);
+        tracing::debug!("Attaching to target system (clock = {}Hz)", self.speed_hz);
 
         // Run connect sequence (may already be done earlier via swj operations)
         self.connect_if_needed()?;
 
         // Set speed after connecting as it can be reset during protocol selection
-        self.set_speed(self.speed_khz)?;
+        self.set_speed(self.speed_hz)?;
 
         self.transfer_configure(ConfigureRequest {
             idle_cycles: 0,
