@@ -540,11 +540,11 @@ pub trait ArmDebugSequence: Send + Sync + Debug {
 
                     tracing::debug!("Switch JTAG SM to TLR state");
                     // Execute at least >5 TCK cycles with TMS high to enter the Test-Logic-Reset state
-                    interface.swj_sequence(6, 0x3F)?;
+                    interface.jtag_sequence(6, true, 0b11_1111)?;
 
                     tracing::debug!("Switch JTAG SM to RTI state");
                     // Enter Run-Test-Idle state, as required by the DAP_Transfer command when using JTAG
-                    interface.jtag_sequence(1, false, 0x01)?;
+                    interface.jtag_sequence(1, false, 0b1)?;
 
                     tracing::debug!("Configure JTAG IR lengths");
                     // Configure JTAG IR lengths in probe
