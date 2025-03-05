@@ -923,6 +923,8 @@ pub trait ArmDebugSequence: Send + Sync + Debug {
         const RESET_RECOVERY_TIMEOUT: Duration = Duration::from_secs(1);
         const RESET_RECOVERY_RETRY_INTERVAL: Duration = Duration::from_millis(5);
 
+        // @fixme berkus: this sequence is applicable only to SWD
+
         // Enter SWD Line Reset State, afterwards at least 2 idle cycles (SWDIO/TMS Low)
         // Guard gives time for the target to recover
         let guard = Instant::now();

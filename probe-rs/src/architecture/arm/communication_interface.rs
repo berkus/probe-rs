@@ -249,6 +249,7 @@ impl<S: ArmDebugState> ArmCommunicationInterface<S> {
         self.probe.as_deref_mut().expect("ArmCommunicationInterface is in an inconsistent state. This is a bug, please report it.")
     }
 
+    // close is very close to clone, maybe shutdown() or disconnect()?
     fn close(mut self) -> Probe {
         let mut probe = self.probe.take().expect("ArmCommunicationInterface is in an inconsistent state. This is a bug, please report it.");
 
@@ -360,6 +361,7 @@ impl UninitializedArmProbe for ArmCommunicationInterface<Uninitialized> {
         let use_overrun_detect = self.state.use_overrun_detect;
         let probe = self.probe.take().expect("ArmCommunicationInterface is in an inconsistent state. This is a bug, please report it.");
 
+        // @fixme berkus - try_setup call is from here
         match ArmCommunicationInterface::<Initialized>::try_setup(
             probe,
             sequence,

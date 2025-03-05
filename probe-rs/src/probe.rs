@@ -655,6 +655,7 @@ pub trait DebugProbe: Send + fmt::Debug {
     /// Selects the JTAG TAP to be used for communication.
     fn select_jtag_tap(&mut self, index: usize) -> Result<(), DebugProbeError> {
         if index != 0 {
+            // @fixme berkus - multiple TAP support for JTAG
             return Err(DebugProbeError::NotImplemented {
                 function_name: "select_jtag_tap",
             });

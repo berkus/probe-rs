@@ -463,6 +463,7 @@ fn perform_transfers<P: DebugProbe + RawProtocolIo + JTAGAccess>(
         };
         final_transfers.push(transfer);
 
+        // @fixme berkus - here filtering by JTAG protocol
         if wire_protocol == WireProtocol::Jtag {
             continue;
         }
@@ -539,6 +540,7 @@ fn perform_transfers<P: DebugProbe + RawProtocolIo + JTAGAccess>(
     Ok(())
 }
 
+// @fixme this is SWD
 /// Perform a batch of raw transfers, retrying on WAIT responses.
 ///
 /// Other than that, the transfers are sent as-is. You might want to use `perform_transfers` instead, which
