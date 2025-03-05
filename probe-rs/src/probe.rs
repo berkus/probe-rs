@@ -194,14 +194,12 @@ pub enum DebugProbeError {
     ///
     /// The debug probe did not yet perform the init sequence.
     /// Try calling [`DebugProbe::attach`] before trying again.
-    #[ignore_extra_doc_attributes]
     NotAttached,
 
     /// You need to be detached from the target to perform this action.
     ///
     /// The debug probe already performed the init sequence.
     /// Try running the failing command before [`DebugProbe::attach`].
-    #[ignore_extra_doc_attributes]
     Attached,
 
     /// Failed to find or attach to the target. Please check the wiring before retrying.

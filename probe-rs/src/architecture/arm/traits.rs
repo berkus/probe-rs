@@ -267,7 +267,7 @@ pub trait RawDapAccess {
 
     /// Configures the probe for JTAG use (specifying IR lengths of each DAP).
     fn configure_jtag(&mut self, _skip_scan: bool) -> Result<(), DebugProbeError> {
-        Ok(())
+        Ok(()) // @berkus fixme?
     }
 
     /// Send a specific output sequence over JTAG.

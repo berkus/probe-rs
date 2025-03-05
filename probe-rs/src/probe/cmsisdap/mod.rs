@@ -83,7 +83,7 @@ impl ProbeFactory for CmsisDapFactory {
 pub struct CmsisDap {
     device: CmsisDapDevice,
     _hw_version: u8,
-    _jtag_version: u8,
+    _jtag_version: u8, // @berkus fixme
     protocol: Option<WireProtocol>,
 
     packet_size: u16,
@@ -191,7 +191,7 @@ impl CmsisDap {
 
     /// Reset JTAG state machine to Test-Logic-Reset.
     fn jtag_ensure_test_logic_reset(&mut self) -> Result<(), CmsisDapError> {
-        let sequence = JtagSequence::no_capture(true, &bitvec![u8, Lsb0; 0; 6])?;
+        let sequence = JtagSequence::no_capture(true, &bitvec![u8, Lsb0; 0; 6])?; // 6 ones, not zeros? @berkus fixme
         let sequences = vec![sequence];
 
         self.send_jtag_sequences(JtagSequenceRequest::new(sequences)?)?;
@@ -1057,6 +1057,7 @@ impl RawDapAccess for CmsisDap {
         self
     }
 
+    // @berkus fixme
     fn configure_jtag(&mut self, skip_scan: bool) -> Result<(), DebugProbeError> {
         let ir_lengths = if skip_scan {
             self.scan_chain
