@@ -828,6 +828,7 @@ impl DebugProbe for CmsisDap {
             // to ensure the debug port is ready for JTAG signals,
             // at which point we can interrogate the scan chain
             // and configure the probe with the given IR lengths.
+            tracing::debug!("Already in JTAG mode, no-op");
         } else {
             self.configure_swd(swd::configure::ConfigureRequest {})?;
         }
@@ -836,6 +837,7 @@ impl DebugProbe for CmsisDap {
         let _: Result<HostStatusResponse, _> =
             commands::send_command(&mut self.device, &HostStatusRequest::connected(true));
 
+        tracing::debug!("Told the probe to enable connection LED, ok");
         Ok(())
     }
 
@@ -1059,6 +1061,8 @@ impl RawDapAccess for CmsisDap {
 
     // @berkus fixme
     fn configure_jtag(&mut self, skip_scan: bool) -> Result<(), DebugProbeError> {
+        tracing::info!("Configure JTAG: cmdsis-dap");
+
         let ir_lengths = if skip_scan {
             self.scan_chain
                 .as_ref()
@@ -1086,6 +1090,7 @@ impl RawDapAccess for CmsisDap {
     }
 
     fn jtag_sequence(&mut self, cycles: u8, tms: bool, tdi: u64) -> Result<(), DebugProbeError> {
+        tracing::info!("JTAG sequence in CmsisDap");
         self.connect_if_needed()?;
 
         let tdi_bytes = tdi.to_le_bytes();

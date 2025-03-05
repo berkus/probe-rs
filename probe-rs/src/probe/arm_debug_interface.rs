@@ -1254,6 +1254,8 @@ impl<Probe: DebugProbe + RawProtocolIo + JTAGAccess + 'static> RawDapAccess for 
     }
 
     fn jtag_sequence(&mut self, bit_len: u8, tms: bool, bits: u64) -> Result<(), DebugProbeError> {
+        tracing::error!("JTAG sequence in RawDapAccess for Probe");
+
         let bits = (0..bit_len).map(|i| (bits >> i) & 1 == 1);
 
         self.jtag_shift_tdi(tms, bits)?;

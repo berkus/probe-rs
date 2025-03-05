@@ -478,10 +478,11 @@ fn send_command_inner<Req: Request>(
 /// zeros required for the various USB APIs, but make the trace output very long and
 /// difficult to read.
 fn trace_buffer(name: &str, buf: &[u8]) {
-    if tracing::enabled!(tracing::Level::TRACE) {
-        let len = buf.len();
-        let cut = len + 1 - buf.iter().rev().position(|&x| x != 0).unwrap_or(len);
-        let end = cut.clamp(1, len);
-        tracing::trace!("{}: {:02X?}...", name, &buf[..end]);
-    }
+    tracing::trace!("{}: {:02X?}...", name, &buf);
+    // if tracing::enabled!(tracing::Level::TRACE) {
+    //     let len = buf.len();
+    //     let cut = len + 1 - buf.iter().rev().position(|&x| x != 0).unwrap_or(len);
+    //     let end = cut.clamp(1, len);
+    //     tracing::trace!("{}: {:02X?}...", name, &buf[..end]);
+    // }
 }

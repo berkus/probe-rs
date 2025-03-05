@@ -387,6 +387,7 @@ impl ArmCommunicationInterface<Initialized> {
         dp: DpAddress,
         use_overrun_detect: bool,
     ) -> Result<Self, (Box<dyn DapProbe>, ArmError)> {
+        tracing::info!("ArmCommunicationInterface::try_setup");
         if let Err(err) = tracing::debug_span!("debug_port_setup")
             .in_scope(|| sequence.debug_port_setup(&mut *probe, dp))
         {
@@ -439,7 +440,7 @@ impl ArmCommunicationInterface<Initialized> {
 
             entry.insert(DpState::new());
 
-            let start_span = tracing::debug_span!("debug_port_start").entered();
+            let start_span = tracing::debug_span!("debug_port_start1").entered();
             sequence.debug_port_start(self, dp)?;
             drop(start_span);
 
@@ -473,7 +474,7 @@ impl ArmCommunicationInterface<Initialized> {
         } else if switched_dp {
             let sequence = self.state.sequence.clone();
 
-            let start_span = tracing::debug_span!("debug_port_start").entered();
+            let start_span = tracing::debug_span!("debug_port_start2").entered();
             sequence.debug_port_start(self, dp)?;
             drop(start_span);
         }

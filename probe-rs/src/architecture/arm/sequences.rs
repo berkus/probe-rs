@@ -533,16 +533,20 @@ pub trait ArmDebugSequence: Send + Sync + Debug {
                         // 4 cycles SWDIO/TMS LOW + 8-Bit JTAG Activation Code (0x0A)
                         interface.swj_sequence(12, 0x0A0)?;
                     } else {
+                        tracing::debug!("Switch SWJ-DP to JTAG");
                         // Execute SWJ-DP Switch Sequence SWD to JTAG (0xE73C).
                         interface.swj_sequence(16, 0xE73C)?;
                     }
 
+                    tracing::debug!("Switch JTAG SM to TLR state");
                     // Execute at least >5 TCK cycles with TMS high to enter the Test-Logic-Reset state
                     interface.swj_sequence(6, 0x3F)?;
 
+                    tracing::debug!("Switch JTAG SM to RTI state");
                     // Enter Run-Test-Idle state, as required by the DAP_Transfer command when using JTAG
                     interface.jtag_sequence(1, false, 0x01)?;
 
+                    tracing::debug!("Configure JTAG IR lengths");
                     // Configure JTAG IR lengths in probe
                     interface.configure_jtag(false)?;
                 }
@@ -898,8 +902,11 @@ pub trait ArmDebugSequence: Send + Sync + Debug {
     ) -> Result<(), ArmError> {
         match interface.active_protocol() {
             Some(WireProtocol::Jtag) => {
-                tracing::debug!("JTAG: No special sequence needed to connect to debug port");
-                return Ok(());
+                tracing::debug!(
+                    "JTAG: No special sequence needed to connect to debug port {:x?}",
+                    dp
+                );
+                return Ok(()); // do not continue DP reading for JTAG
             }
             Some(WireProtocol::Swd) => {
                 tracing::debug!("SWD: Connecting to debug port with address {:x?}", dp);
