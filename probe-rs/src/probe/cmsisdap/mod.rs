@@ -805,6 +805,13 @@ impl DebugProbe for CmsisDap {
         }
     }
 
+    // FIXME: could be this is completely unrelated and does not need to be implemented here... could be.
+    fn select_jtag_tap(&mut self, index: usize) -> Result<(), DebugProbeError> {
+        Err(DebugProbeError::Other(format!(
+            "Select JTAG TAP {index} is not implemented for CmsisDap?"
+        )))
+    }
+
     /// Enters debug mode.
     #[tracing::instrument(skip(self))]
     fn attach(&mut self) -> Result<(), DebugProbeError> {
